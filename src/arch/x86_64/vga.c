@@ -37,7 +37,7 @@ static unsigned char color = FG(VGA_GRAY) | BG(VGA_BLACK);
 static void scroll(void)
 {
     memcpy(vgaBuff, vgaBuff+width, width*(height-1));
-    memset(vgaBuff[width * (height - 1)], 0, width);
+    memset(&vgaBuff[width * (height - 1)], 0, width);
     cursor -= width * height;
 }
 
@@ -69,5 +69,7 @@ void VGA_display_char(char c)
 
 void VGA_display_str(const char * str)
 {
-    memcpy(&vgaBuff[cursor], str, strlen(str));
+    char * p = str;
+
+    while (*p) VGA_display_char(*p++);
 }

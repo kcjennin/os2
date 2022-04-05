@@ -3,11 +3,8 @@
 
 void kmain(void)
 {
-    int i,j=0;
+    int i, j=0;
+    // while(!j);
 
-    VGA_clear();
-    for (i = 0; i < 107; i++)
-        VGA_display_str("Hello, World!! ");
-    
     while (1) asm("hlt");
 }

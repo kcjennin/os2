@@ -4,8 +4,6 @@ img := build/os-$(arch).img
 mount = /mnt/osimg
 blank_img = src/blank.img
 export PATH := /home/ubuntu/opt/cross/bin:$(PATH)
-export DISPLAY=localhost:10.0
-dummy := $(shell xauth add `runuser -u ubuntu -- xauth list`)
 
 linker_script := src/arch/$(arch)/linker.ld
 grub_cfg := src/arch/$(arch)/grub.cfg
@@ -27,7 +25,7 @@ clean:
 	@rm -rf build
 
 run: $(img)
-	@qemu-system-x86_64 -s -drive format=raw,file=$(img) -serial stdio
+	@runuser -u ubuntu -- qemu-system-x86_64 -s -drive format=raw,file=$(img) -serial stdio
 
 img: $(img)
 
@@ -41,6 +39,7 @@ $(img): $(kernel) $(grub_cfg)
 	@cp -r build/img/* $(mount)
 	@umount $(mount)
 	@losetup -d $(loop)
+	@chmod 0777 $(img)
 
 $(kernel): $(assembly_object) $(c_object) $(linker_script)
 	@x86_64-elf-ld -n -o $(kernel) -T $(linker_script) $(assembly_object) $(c_object)

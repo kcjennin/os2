@@ -69,7 +69,5 @@ void VGA_display_char(char c)
 
 void VGA_display_str(const char * str)
 {
-    char * p = str;
-
-    while (*p) VGA_display_char(*p++);
+    while (*str) VGA_display_char(*str++);
 }

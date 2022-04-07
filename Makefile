@@ -3,7 +3,9 @@ kernel := build/kernel-$(arch).bin
 img := build/os-$(arch).img
 mount = /mnt/osimg
 blank_img = src/blank.img
-export PATH := /home/kyle/opt/cross/bin:$(PATH)
+export PATH := /home/ubuntu/opt/cross/bin:$(PATH)
+export DISPLAY=localhost:10.0
+dummy := $(shell xauth add `runuser -u ubuntu -- xauth list`)
 
 linker_script := src/arch/$(arch)/linker.ld
 grub_cfg := src/arch/$(arch)/grub.cfg

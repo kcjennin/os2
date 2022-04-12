@@ -72,6 +72,27 @@ void print_short_int(short int i)
     VGA_display_str(&str[index+1]);
 }
 
+void print_long_long_int(long long int i)
+{
+    int negative = 0, index = MAX_LONG_INT_STR - 2;
+    char str[MAX_LONG_INT_STR + 1] = { 0 };
+
+    if (i < 0)
+    {
+        negative = 1;
+        i *= -1;
+    }
+    else if (!i)
+        str[index--] = '0';
+
+    for (; i; i /= 10)
+        str[index--] = (i % 10) + '0';
+
+    if (negative) str[index--] = '-';
+
+    VGA_display_str(&str[index+1]);
+}
+
 void print_unsigned_int(unsigned int i)
 {
     int index = MAX_INT_STR - 2;
@@ -104,6 +125,20 @@ void print_short_unsigned_int(short unsigned int i)
 {
     int index = MAX_SHORT_INT_STR - 2;
     char str[MAX_SHORT_INT_STR] = { 0 };
+
+    if (!i)
+        str[index--] = '0';
+
+    for (; i; i /= 10)
+        str[index--] = (i % 10) + '0';
+
+    VGA_display_str(&str[index+1]);
+}
+
+void print_long_long_unsigned_int(long long unsigned int i)
+{
+    int index = MAX_LONG_INT_STR - 2;
+    char str[MAX_LONG_INT_STR] = { 0 };
 
     if (!i)
         str[index--] = '0';
@@ -183,6 +218,29 @@ void print_short_unsigned_hex(short unsigned int i)
     VGA_display_str(str);
 }
 
+void print_long_long_unsigned_hex(long long unsigned int i)
+{
+    const char hex_lookup[] = "0123456789abcdef";
+    char str[MAX_LONG_HEX_STR] = { 0 };
+    long long unsigned int n;
+    int len = 0;
+
+    if (!i)
+        len = 1;
+    else
+    {
+        for (n = i; n; n >>= 4)
+            len++;
+    }
+
+    str[len] = '\0';
+
+    for (--len; len >= 0; i>>=4, --len)
+        str[len] = hex_lookup[i & 0xf];
+
+    VGA_display_str(str);
+}
+
 void print_char(char c)
 {
     VGA_display_char(c);
@@ -190,22 +248,14 @@ void print_char(char c)
 
 void print_pointer(void *ptr)
 {
-
+    VGA_display_char('0');
+    VGA_display_char('x');
+    print_long_unsigned_hex((long unsigned int)ptr);
 }
 
 void print_str(const char *str)
 {
     VGA_display_str(str);
-}
-
-void print_uchar(unsigned char c)
-{
-
-}
-
-void print_short(short s)
-{
-
 }
 
 void printk(const char *fmt, ...)
@@ -275,7 +325,21 @@ void printk(const char *fmt, ...)
                 }
                 break;
             case 'q':
-                // multiple options
+                fmt++;
+                switch (*fmt)
+                {
+                case 'd':
+                    print_long_long_int(va_arg(args, long long int));
+                    break;
+                case 'u':
+                    print_long_long_unsigned_int(va_arg(args, long long unsigned int));
+                    break;
+                case 'x':
+                    print_long_long_unsigned_hex(va_arg(args, long long unsigned int));
+                    break;
+                default:
+                    break;
+                }
                 break;
             case 's':
                 print_str(va_arg(args, char *));

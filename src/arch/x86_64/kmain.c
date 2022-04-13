@@ -1,6 +1,8 @@
-#include <vga.h>
-#include <string.h>
-#include <printk.h>
+#include "vga.h"
+#include "string.h"
+#include "printk.h"
+#include "ps2.h"
+#include "keyboard.h"
 
 void test_printk(void);
 
@@ -12,6 +14,8 @@ void kmain(void)
     VGA_clear();
 
     // test_printk();
+    ps2_setup();
+    keyboard_setup();
 
     while (1) asm("hlt");
 }

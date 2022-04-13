@@ -18,10 +18,12 @@ void kmain(void)
 
 void test_printk(void)
 {
+    int i;
+
     // normals
     printk("normals: ");
     printk("string: %s\n", "Hello, World!");
-    printk("pointer: %p\n", &j);
+    printk("pointer: %p\n", &i);
     printk("d: %d ", -2000000);
     printk("u: %u ", 2000000);
     printk("x: 0x%x ", -1);
